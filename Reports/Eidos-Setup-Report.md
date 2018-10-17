@@ -23,9 +23,14 @@ Justin tested with:
 * [Scala API](#Scala-API)
 * [CLI Invocation](#CLI-Invocation)
 * [Webapp](#Webapp)
+* [INDRA Invocation](#INDRA-Invocation)
 
 # General Findings
-Eidos sits at the top of the World Modeler stack in many ways: automatically reads documents and generates directed causal events in JSON or JSON-LD. However, all efforts to run Eidos failed. After compiling the source, the Scala API, CLI invocation, webapp, and INDRA invocation all failed with errors as detailed below.
+Eidos sits at the top of the World Modelers stack in many ways: it automatically reads documents and generates directed causal events in JSON or JSON-LD. 
+
+Initial efforts to run Eidos, relying on provided documentation, failed. After compiling the source, the Scala API, CLI invocation, webapp, and INDRA invocation all failed with errors as detailed below. 
+
+Additional debugging and configuration **not detailed in the documentation** enabled the integration team to run Eidos via INDRA. The standard Eidos example string (`"Water trucking has decreased due to the cost of fuel."`) was run, but returned an empty result set, indicating that the installation was not running as expected.
 
 Furthermore, the documentation does not sufficiently describe how to invoke the Scala API and specifically what set up is required to do this. 
 
@@ -745,14 +750,16 @@ Caused by: java.lang.ClassNotFoundException: com.sun.xml.internal.bind.v2.Contex
 
 ## INDRA Invocation
 
-**Useful links for install (only use if below instructions fail you)**
+**Useful links for install (only use if below instructions fail you)**:
+
 * [Decent instructions hidden in `indra/sources/eidos/__init__.py`](https://github.com/sorgerlab/indra/blob/master/indra/sources/eidos/__init__.py)
 * [pyjnius Java issue](https://github.com/kivy/pyjnius/issues/277)
 * [pyjnius install](https://pyjnius.readthedocs.io/en/latest/)
 
-**Instructions**
+### Instructions
 
-***Environment Set Up***
+**Environment Set Up**
+
 ```
 conda create -n indra_env python=3.7 pip
 source activate indra_env
@@ -763,7 +770,9 @@ pip install git+https://github.com/sorgerlab/indra.git
 # Eventually use this
 pip freeze > requirements.txt
 ```
-***Actual Install***
+
+**Actual Install**
+
 * Make sure JDK and JRE are installed and JDK_HOME and JRE_HOME environment variables are set.
 * Install `pyjnius` python package with `pip install pyjnius`
 * Test the install with starting a python REPL.  You may encounter:
