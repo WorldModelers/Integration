@@ -16,14 +16,14 @@ Justin tested with:
 * Java Version: Oracle java version 1.8.0_71
 
 # Contents
-* [General Findings](#General-Findings)
-* [Documentation](#Documentation)
-* [Installation](#Installation)
-* [Running Eidos](#Running-Eidos)
-* [Scala API](#Scala-API)
-* [CLI Invocation](#CLI-Invocation)
-* [Webapp](#Webapp)
-* [INDRA Invocation](#INDRA-Invocation)
+* [General Findings](#general-findings)
+* [Documentation](#documentation)
+* [Installation](#installation)
+* [Running Eidos](#running-eidos)
+* [Scala API](#scala-api)
+* [CLI Invocation](#cli-invocation)
+* [Webapp](#webapp)
+* [INDRA Invocation](#indra-invocation)
 
 # General Findings
 Eidos sits at the top of the World Modelers stack in many ways: it automatically reads documents and generates directed causal events in JSON or JSON-LD. 
