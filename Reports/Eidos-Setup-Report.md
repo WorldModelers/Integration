@@ -783,7 +783,7 @@ No Java runtime present, requesting install.
 * If you do, it might be solved by adding `<string>JNI</string>` to `JVMCapabilities` in `/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Info.plist`
 * For eidos to provide grounding information to be included in INDRA Statements, the eidos configuration needs to be adjusted. So...
 * Download vectors.txt from
-https://drive.google.com/open?id=1tffQuLB5XtKcq9wlo0n-tsnPJYQF18oS and put it in a folder called `src/main/resources/org/clulab/wm/eidos/english/w2v`
+https://s3.amazonaws.com/world-modelers/data/vectors.txt and put it in a folder called `src/main/resources/org/clulab/wm/eidos/english/w2v`
 * Set the property "useW2V" to true in `src/main/resources/eidos.conf`
 * Rerun `sbt assembly`
 * Set the absolute path to the JAR file to the EIDOSPATH environment variable `export EIDOSPATH="/fullpath/target/scala-2.12/eidos-assembly-0.2.2-SNAPSHOT.jar"`
