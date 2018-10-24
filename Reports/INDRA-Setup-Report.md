@@ -28,44 +28,100 @@ INDRA has both a [Read the Docs instance](https://indra.readthedocs.io/en/latest
 The documentation for integrating INDRA and Eidos could be expanded; there is critical information that is lacking in the top-level documentation but can be found as comments in code (see: the [Eidos Source init file](https://github.com/sorgerlab/indra/blob/master/indra/sources/eidos/__init__.py).
 
 # Installation:
-The latest release (`v1.8.0`) was installed from [Github](https://github.com/sorgerlab/indra) by following the instructions detailed in the [Eidos Software Report](https://github.com/WorldModelers/Integration/blob/master/Reports/Eidos-Setup-Report.md#indra-invocation).
-
-Additionally, `JAVA_HOME` should be set with:
+The following steps were used for system configuration and installation on Ubuntu 16.04.
 
 ```
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 export PATH=$JAVA_HOME/bin:$PATH
-```
+sudo apt-get update
 
-Next ensure that [Graphviz](www.graphviz.org) is installed with:
+# install Git
+sudo apt-get install git
 
-```
+# install JRE
+sudo apt-get install default-jre default-jdk
+
+# install Anaconda
+wget https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh
+bash Anaconda3-5.3.0-Linux-x86_64.sh
+
+# install graphviz
 sudo apt-get install graphviz libgraphviz-dev
-pip install pygraphviz
-```
 
-You will also need to install [BioNetGen](https://www.csb.pitt.edu/Faculty/Faeder/?page_id=409) for [PySB](http://pysb.org/) to work correctly. To do this, run:
+# install scala and SBT
+sudo apt-get remove scala-library scala
+sudo wget http://scala-lang.org/files/archive/scala-2.12.7.deb
+sudo dpkg -i scala-2.12.7.deb
+sudo apt-get update
+sudo apt-get install scala
 
-```
+# install SBT
+echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+sudo apt-get update
+sudo apt-get install sbt
+
+# set JAVA_HOME in .bashrc 
+echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 export PATH=$JAVA_HOME/bin:$PATH" >> /home/ubuntu/.bashrc
+source ~/.bashrc
+
+# clone the Eidos repo
+git clone https://github.com/clulab/eidos.git
+
+# get vectors
+cd ~/eidos
+wget https://s3.amazonaws.com/world-modelers/data/vectors.txt
+mv vectors.txt src/main/resources/org/clulab/wm/eidos/english/w2v
+
+# update Eidos conf to use W2V
+sed -i 's/useW2V = false/useW2V = true/' src/main/resources/eidos.conf
+
+# Assemble Eidos
+sbt assembly
+
+# Test installation with:
+JAVA_OPTS="-Xmx8g" scala -cp target/scala-2.12/eidos-assembly-0.2.2-SNAPSHOT.jar org.clulab.wm.eidos.apps.examples.ExtractFromText
+
+# Create Conda Env for INDRA and run install
+conda create -n indra_env python=3.7 pip
+source activate indra_env
+pip install --upgrade pip
+pip install Cython
+pip install git+https://github.com/sorgerlab/indra.git
+pip install pygraphviz pyjnius flask jupyter
+
+# Set Eidos class path for INDRA
+echo "import indra" | python
+sed -i 's/EIDOSPATH = /EIDOSPATH = \/home\/ubuntu\/eidos\/target\/scala-2.12\/eidos-assembly-0.2.2-SNAPSHOT.jar/' /home/ubuntu/.config/indra/config.ini
+
+# Install BioNetGen
 wget https://s3.amazonaws.com/world-modelers/applications/BioNetGen-2.3.1-Linux.tar.gz
 tar xvzf BioNetGen-2.3.1-Linux.tar.gz
 sudo mv BioNetGen-2.3.1 /usr/local/share/BioNetGen
 ```
 
-
 # Running INDRA
 INDRA and Eidos integration was successful using the [INDRA Test Notebook](https://github.com/WorldModelers/Integration/blob/master/Notebooks/INDRA_tests.ipynb) available in this repository. This relies on having a built Eidos JAR and ensuring that it is available for INDRA usage.
 
 ## Eidos Web Service
-Per [INDRA documentation](https://indra.readthedocs.io/en/latest/modules/sources/eidos/index.html?highlight=webservice#indra.sources.eidos.api.process_text), Eidos can be invoked via a web service instead of through the assembled JAR. However, in practice this fails. Running:
+INDRA does have the ability to run a [lightweight Flask web service](https://github.com/sorgerlab/indra/blob/master/indra/sources/eidos/server.py) for issues commands to Eidos. There is a discussion about whether this should be included in Eidos, not INDRA, here in a related [pull request to Eidos](https://github.com/clulab/eidos/pull/484).
+
+Based on the documentation, it can be run with:
 
 ```
-ep = eidos.process_text(text, webservice='http://localhost:9000')
+python -m indra.sources.eidos.server
 ```
 
-where the Eidos webapp is running at `localhost:9000` fails. This issue appears to have 3 causes:
+and then it can be used with:
 
-1. INDRA sends a `POST` request to Eidos (see INDRA's [`process_text` call](https://github.com/sorgerlab/indra/blob/master/indra/sources/eidos/api.py#L22-L60)) when Eidos expects a `GET` (see Eidos [webapp routes](https://github.com/clulab/eidos/blob/master/webapp/conf/routes)).
-2. INDRA routes the request to a `process_text` endpoint at the Eidos web service (which does not exist) instead of a `parseText` endpoint.
-3. The Eidos `parseText` endpoint returns JSON, instead of the expected JSON-LD.
+```
+from indra.sources import eidos
 
-This issue is detailed (though not solved) in a related [pull request to Eidos](https://github.com/clulab/eidos/pull/484).
+
+
+text = """A significant increase in precipitation resulted in food 
+insecurity and a decrease in humanitarian interventions. 
+Actually, food insecurity itself can lead to conflict, and in turn, 
+conflict can drive food insecurity. Generally, humanitarian 
+interventions reduce conflict."""
+
+ep = eidos.process_text(text, webservice='http://localhost:5000')
+```
