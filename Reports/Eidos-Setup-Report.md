@@ -6,11 +6,13 @@
 * URL: [https://github.com/clulab/eidos](https://github.com/clulab/eidos)
 
 Brandon tested with:
+
 * System: MacOS 10.13.6
 * Scala Version: 2.12.7
 * Java Version: openjdk11
 
 Justin tested with:
+
 * System: MacOS 10.13.6
 * Scala Version: 2.12.7
 * Java Version: Oracle java version 1.8.0_71
@@ -20,6 +22,7 @@ Justin tested with:
 * [Documentation](#documentation)
 * [Installation](#installation)
 * [Running Eidos](#running-eidos)
+* [Eidos Speed Test](#eidos-speed-test)
 * [Scala API](#scala-api)
 * [CLI Invocation](#cli-invocation)
 * [Webapp](#webapp)
@@ -64,6 +67,17 @@ This took 6.5 minutes to run. It creates a JAR within the project directory whic
 
 
 # Running Eidos
+
+## Eidos Speed Test
+Eidos was run against [54 plain text articles](https://s3.amazonaws.com/world-modelers/data/news_articles.zip) pulled from the New York Times website on 10/25/2018. This was test was performed on an [Amazon EC2 t3.large](https://aws.amazon.com/ec2/instance-types/t3/) instance.
+
+| Process             | Time  |
+|---------------------|-------|
+| Initialization      | 220 s |
+| Resource Loading    | 155 s |
+| Document Processing | 102 s |
+
+After initialization and loading, document processing took about 2 seconds per document, indicating that Eidos could be run in real-time as a webservice on a per document basis.
 
 ## Scala API
 After running `sbt assembly`, the following runs this simple [example](https://github.com/jgawrilo/eidos/blob/master/src/main/scala/org/clulab/wm/eidos/apps/examples/ExtractFromText.scala) showing the potential of integrating the functionality in your own app. **Please note you may need to use 8gb of RAM for this to work**
