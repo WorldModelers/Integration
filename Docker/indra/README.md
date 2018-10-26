@@ -3,6 +3,6 @@ This contains code and instructions for standing up a container with INDRA and E
 
 
 1. `./start.sh` - Builds the container (will take a while) and runs bash in the container such that you can test below.
-2. `./test_eidos.sh` - Test the EIDOS [Scala API](https://github.com/WorldModelers/Integration/blob/master/Reports/Eidos-Setup-Report.md#scala-api) and that EIDOS was intalled correctly.
-3. `./test_indra.sh` - Test the INDRA/EIDOS integration through running the [jupyter notebook](https://github.com/WorldModelers/Integration/blob/master/Notebooks/INDRA_tests.ipynb)
+2. `./test_eidos.sh` - Test the EIDOS [Scala API](https://github.com/WorldModelers/Integration/blob/master/Reports/Eidos-Setup-Report.md#scala-api) and that EIDOS was intalled correctly. **To be run in the container**
+3. `./test_indra.sh` - Test the INDRA/EIDOS integration through running the [jupyter notebook](https://github.com/WorldModelers/Integration/blob/master/Notebooks/INDRA_tests.ipynb) **To be run in the container** **Assumes port 8888 is usable**
 4.  Head to [http://localhost:8888/notebooks/INDRA_tests.ipynb](http://localhost:8888/notebooks/INDRA_tests.ipynb) and run!
