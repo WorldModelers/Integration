@@ -5,7 +5,6 @@ apt-get install dialog -y
 apt-get install git -y
 
 
-
 # Java
 add-apt-repository -y ppa:webupd8team/java
 apt-get update
@@ -61,14 +60,14 @@ sbt assembly
 
 # Create Conda Env for INDRA and run install
 conda create -n indra_env python=3.7.0 pip -y
-source activate indra_env
+conda activate indra_env
 pip install --upgrade pip
 pip install objectpath
 pip install Cython
 pip install git+https://github.com/sorgerlab/indra.git
 pip install pygraphviz pyjnius flask jupyter
 pip install matplotlib
-
+pip install fuzzywuzzy seaborn
 
 # Set Eidos class path for INDRA
 #echo "import indra" | python
@@ -82,3 +81,16 @@ wget https://s3.amazonaws.com/world-modelers/applications/BioNetGen-2.3.1-Linux.
 tar xvzf BioNetGen-2.3.1-Linux.tar.gz
 mv BioNetGen-2.3.1 /usr/local/share/BioNetGen
 
+# Install Delphi
+git clone https://github.com/ml4ai/delphi
+cd delphi
+python setup.py install
+
+# Get Delphi Data
+apt-get install unzip -y
+cd ../
+wget https://s3.amazonaws.com/world-modelers/data/delphi_data.zip
+unzip delphi_data.zip
+
+# Set DELPHI_DATA environment variable
+export DELPHI_DATA=/data/

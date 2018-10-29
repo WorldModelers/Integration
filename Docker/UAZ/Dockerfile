@@ -7,5 +7,6 @@ RUN /install.sh
 
 
 COPY test_eidos.sh /
-COPY test_indra.sh /
-COPY INDRA_tests.ipynb /
+COPY test_UAZ.sh /
+COPY Notebooks/INDRA_tests.ipynb /
+COPY Notebooks/Delphi_tests.ipynb /
