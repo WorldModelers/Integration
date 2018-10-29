@@ -5,3 +5,4 @@ This repository contains information related to World Modelers software integrat
 2. [**Plans**](https://github.com/WorldModelers/Integration/tree/master/Plans): integration planning documents.
 3. [**Diagrams**](https://github.com/WorldModelers/Integration/tree/master/Diagrams): architecture diagrams detailing the integration of World Modelers software components.
 4. [**Notebooks**](https://github.com/WorldModelers/Integration/tree/master/Notebooks): Jupyter notebooks used for high-level testing of various software components.
+5. [**Docker**](https://github.com/WorldModelers/Integration/tree/master/Docker): Contains code to generate Docker containers of World Modelers components for testing and deployment.
