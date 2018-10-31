@@ -99,10 +99,11 @@ jupyter notebook
 
 # Navigate to ./examples/examples.ipynb and run the notebook (may want to look at the issue below before to ensure a successful run.)
 
+```
+
 At the end, you should see something like the following in Cytoscape:
 
 ![graph](https://github.com/WorldModelers/Integration/raw/master/Reports/graph.png)
-```
 # Issues
 Within the examples.ipynb, at the cell:
 
