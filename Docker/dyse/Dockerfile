@@ -31,7 +31,8 @@ RUN conda create -n pitt_env python=3.7.0 pip -y
 RUN pip install --upgrade pip 
 RUN pip install jupyter \
 	plotly \
-	xlrd
+	xlrd \
+	indra
 
 # Install MCL
 RUN wget https://micans.org/mcl/src/mcl-latest.tar.gz
@@ -71,9 +72,32 @@ ENV PATH "${FRAMEWORKPATH}/Sensitivity/Static:$PATH"
 # Install DySE
 RUN cd ${FRAMEWORKPATH}; python setup.py install
 
+# Obtain WM Example Notebook and configure directories
+WORKDIR /
+RUN wget https://s3.amazonaws.com/world-modelers/repos/dyse-wm-example.zip
+RUN unzip dyse-wm-example.zip
+RUN mkdir Site_Visit_Demo/a Site_Visit_Demo/a/b/ Site_Visit_Demo/a/b/c
+RUN mv Site_Visit_Demo/API Site_Visit_Demo/a/b/c/API
+RUN mv Site_Visit_Demo/files Site_Visit_Demo/a/b/c/files
+RUN wget https://s3.amazonaws.com/world-modelers/data/style.js
+RUN mv style.js Site_Visit_Demo/a/b/c/API/style.js
+RUN mkdir Code
+RUN mv framework Code/Framework
+
+# Install CytoscapeJS
+RUN apt-get install -y npm
+RUN npm install webpack -g
+RUN wget https://deb.nodesource.com/setup_6.x && bash setup_6.x
+RUN apt-get install -y nodejs
+# RUN ln -s /usr/bin/nodejs /usr/bin/node
+RUN git clone https://github.com/cytoscape/jupyter-cytoscape.git
+WORKDIR jupyter-cytoscape
+RUN sed '/notebook/d' -i makefile
+RUN make
+
 # Make port 8888 available to the world outside this container
 EXPOSE 8888
 
 # Run Jupyter Notebook
-WORKDIR ${FRAMEWORKPATH}
+WORKDIR /
 CMD jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root --NotebookApp.token='' --NotebookApp.password=''
