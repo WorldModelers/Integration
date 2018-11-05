@@ -46,7 +46,7 @@ RUN make install
 WORKDIR /
 
 # Install DySE
-RUN git clone https://$username@$password.org/biodesignlab/framework.git
+RUN git clone https://$username:$password@bitbucket.org/biodesignlab/framework.git
 ENV FRAMEWORKPATH $HOME/framework
 
 # Install automake
