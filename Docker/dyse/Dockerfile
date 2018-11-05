@@ -81,6 +81,8 @@ RUN mv Site_Visit_Demo/API Site_Visit_Demo/a/b/c/API
 RUN mv Site_Visit_Demo/files Site_Visit_Demo/a/b/c/files
 RUN wget https://s3.amazonaws.com/world-modelers/data/style.js
 RUN mv style.js Site_Visit_Demo/a/b/c/API/style.js
+RUN wget https://s3.amazonaws.com/world-modelers/data/DySE_tests.ipynb
+RUN mv DySE_tests.ipynb Site_Visit_Demo/a/b/c/API/DySE_tests.ipynb
 RUN mkdir Code
 RUN mv framework Code/Framework
 
