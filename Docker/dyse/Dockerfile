@@ -1,11 +1,79 @@
 FROM ubuntu:16.04
 
-RUN apt-get update
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    software-properties-common
 
-#COPY install.sh /
-#RUN /install.sh
+RUN add-apt-repository ppa:ubuntu-toolchain-r/test
 
+RUN apt-get update && apt-get install -y \
+    gcc-8 \
+    g++-8 \
+    git \
+    wget \
+    unzip \
+    libgsl-dev \
+    libboost-all-dev
 
-#COPY test_eidos.sh /
-#COPY test_indra.sh /
-#COPY INDRA_tests.ipynb /
+# Set the working directory to /app
+WORKDIR /
+
+# Install Anaconda
+RUN wget https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh
+RUN bash Anaconda3-5.3.0-Linux-x86_64.sh -b
+RUN rm Anaconda3-5.3.0-Linux-x86_64.sh
+
+# Add Conda to PATH
+ENV PATH /root/anaconda3/bin:$PATH
+
+# Create Conda environment
+RUN conda create -n pitt_env python=3.7.0 pip -y
+RUN pip install --upgrade pip 
+RUN pip install jupyter \
+	plotly \
+	xlrd
+
+# Install MCL
+RUN wget https://micans.org/mcl/src/mcl-latest.tar.gz
+RUN tar xzf mcl-latest.tar.gz
+WORKDIR /mcl-14-137
+RUN ./configure --prefix=$HOME/local
+RUN make install
+WORKDIR /
+
+# Install DySE
+RUN wget https://s3.amazonaws.com/world-modelers/repos/dyse.zip
+RUN unzip dyse.zip
+ENV FRAMEWORKPATH $HOME/framework
+
+# Install automake
+RUN apt-get install -y automake
+RUN ln -s /usr/bin/aclocal-1.15 /usr/bin/aclocal-1.14
+
+# Install Dishwrap
+WORKDIR ${FRAMEWORKPATH}/Checking/dishwrap_v1.0/dishwrap
+RUN make
+WORKDIR ${FRAMEWORKPATH}/Checking/dishwrap_v1.0/monitor
+RUN make
+
+# Install Cudd for sensitivity analysis
+WORKDIR ${FRAMEWORKPATH}/Sensitivity/cudd-3.0.0
+RUN ./configure
+RUN make
+RUN make install
+
+# Update PATH variable
+ENV PATH "${FRAMEWORKPATH}/Checking/dishwrap_v1.0/dishwrap:$PATH"
+ENV PATH "${FRAMEWORKPATH}/Checking/dishwrap_v1.0/monitor:$PATH"
+ENV PATH "${FRAMEWORKPATH}/Sensitivity/Dynamic:$PATH"
+ENV PATH "${FRAMEWORKPATH}/Sensitivity/Static:$PATH"
+
+# Install DySE
+RUN cd ${FRAMEWORKPATH}; python setup.py install
+
+# Make port 8888 available to the world outside this container
+EXPOSE 8888
+
+# Run Jupyter Notebook
+WORKDIR ${FRAMEWORKPATH}
+CMD jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root --NotebookApp.token='' --NotebookApp.password=''
