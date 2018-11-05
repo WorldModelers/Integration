@@ -1,5 +1,8 @@
 FROM ubuntu:16.04
 
+ARG username
+ARG password
+
 RUN apt-get update && apt-get install -y \
     build-essential \
     software-properties-common
@@ -43,8 +46,7 @@ RUN make install
 WORKDIR /
 
 # Install DySE
-RUN wget https://s3.amazonaws.com/world-modelers/repos/dyse.zip
-RUN unzip dyse.zip
+RUN git clone https://$username@$password.org/biodesignlab/framework.git
 ENV FRAMEWORKPATH $HOME/framework
 
 # Install automake
