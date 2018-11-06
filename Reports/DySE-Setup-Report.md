@@ -13,15 +13,16 @@ Justin tested with:
 * [Documentation](##documentation)
 * [Installation](##installation)
 * [Issues](#issues)
+* [Integration](#integration)
 
 # General Findings
 
-The framework code is huge! 933 MB which seems a lot for code.  Perhaps models and/or data is included.
+The framework code is huge! 933 MB which seems a lot for code.  Perhaps models and/or data is included. We created an extremely [simple example of DySE functionality here.](https://github.com/WorldModelers/Integration/blob/master/Notebooks/DySE-Simple-Example.ipynb)
 
 ## Documentation
 Documentation is a little scattered but most of the pieces are there somehow or another.  Looking at https://bitbucket.org/biodesignlab/framework/src/develop/ for installation.  Usage seems to be everything under the examples directory including the .ipynb and test-\*.bash run scripts.
 
-The big gap is what this actually does in human speak. How would I use this with my own data?
+The big gap is what this actually does in human speak. How would I use this with my own data? Additionally, some of the documentation is highly technical. For example, the `output_format` argument for the `Simulation` module accepts numeric input; the documentation describes which each number corresponds to. However, the corresponding output formats are DySE specific (e.g. `trace file`, `truth table`, `transposed trace file`, etc.) and do not conform to what most users might expect as options for output format (e.g. `JSON`, `CSV`, `XML`, etc.).
 
 ## Requirements
 
@@ -104,7 +105,8 @@ jupyter notebook
 At the end, you should see something like the following in Cytoscape:
 
 ![graph](https://github.com/WorldModelers/Integration/raw/master/Reports/graph.png)
-# Issues
+
+## Issues
 Within the examples.ipynb, at the cell:
 
 ```
@@ -208,3 +210,28 @@ This can be resolved by editing framework/Extension/geneticAlgorithm.py (comment
 Keep in mind you'll have to do a `python setup.py install` again.
 
 I'm not sure if it's an input issue or a parallel processing issue.  We should follow up with Pitt on this.
+
+## Integration
+The primary role DySE plays is in model simulation. Currently, the simulator requires an Excel file as input. The input format is not well-defined in the documentation but based on an examination of the code it requires the following columns:
+
+* `variable`: the name of the variable (`X`)
+* `positive`: an array (list) of the variables that have a positive impact on `X`
+* `negative`: an array (list) of the variables that have a negative impact on `X`
+* `initial`: an initial value for the variable `X`. This can be either 0, 1, or 2. See [`Simulator.py`](https://bitbucket.org/biodesignlab/framework/src/d84cc96d56ea27aacf2290490d981392d0783fd7/Simulation/Simulator_Python/simulator.py#lines-40) to see implementation details. In this context, 0 corresponds with 0%, 1 with 50%, and 2 with 100%.
+
+### Secondary functionality
+Beyond simulation, DySE has the ability to extend (or merge) models. Given two sets of model data, it can extend one with the other to present a larger, more encompassing model.
+
+It can also perform statistical "checking" whereby a given condition is tested against the model. For example, a condition may be "Is hunger is less than 50% in the first 20 time steps?". The DySE checking functionality offers various statistical tests to determine whether and to what degree this condition is met.
+
+### Delphi
+
+There are functions in the `Translation` module for converting from the Delphi CAG format to the DySE Model format (`Translation.model.get_model_from_delphi`). This model then must be exported to an Excel file prior to running simulations. This seems like an unnecesssary additional step. 
+
+Additionally, there is a handler to convert a DySE Model into the Delphi format. Whether Delphi can actually ingest this output has yet to be tested.
+
+### SAUCE
+There is a handler, `Translation.model.model_to_sauce` which converts a DySE Model to SAUCE compatible JSON. Whether SAUCE can ingest this output has yet to be tested.
+
+### INDRA
+There is a handler, `Translation.translator_wm.convert_indra_statements` which takes as input INDRA statements and converts them to tabular format. However, the format which is produced does not conform to the DySE Model format as defined above. Therefore, it is unclear what role this conversion takes.
