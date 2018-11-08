@@ -3,7 +3,7 @@ apt-get install software-properties-common -y
 add-apt-repository ppa:ubuntu-toolchain-r/test
 apt-get update
 apt-get install gcc-8 g++-8 -y
-
+apt-get install libxml2-dev
 
 
 
@@ -81,5 +81,12 @@ python setup.py install
 pip install --upgrade pip
 pip install jupyter
 pip install plotly 
+
+
+# Install Cytoscape
+# Note that this does install Cytoscape but it isn't running as it can't be run headlessly
+cd ../
+wget https://github.com/cytoscape/cytoscape/releases/download/3.7.0/Cytoscape_3_7_0_unix.sh
+bash Cytoscape_3_7_0_unix.sh -q
 
 ### RUNNING
