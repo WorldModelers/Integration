@@ -131,18 +131,21 @@ So...
 ```
 git clone https://github.com/aic-sri-international/aic-util.git 
 cd aic-util
+rm -r target; rm -r src
 mvn clean install
 # Success!
 
 git clone https://github.com/aic-sri-international/aic-expresso.git
 cd aic-expresso
+rm -r target; rm -r src
 mvn clean install
 # Success!
 
 git clone https://github.com/aic-sri-international/aic-praise.git
+rm -r src
 cd aic-priase.git
-mvn clean test
-# Lots of Failure
+mvn clean install
+# Success!
 ```
 
 # Running:
