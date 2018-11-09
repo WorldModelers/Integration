@@ -128,6 +128,7 @@ mvn clean test
 Actually, had to follow this first: https://github.com/aic-sri-international/aic-util/wiki/Getting-Started
 
 So...
+
 ```
 git clone https://github.com/aic-sri-international/aic-util.git 
 cd aic-util
@@ -146,4 +147,49 @@ mvn clean test
 ```
 
 # Running:
-TODO
+Unable to build any of the projects, I downloaded the pre-compiled JARs described on the [PRAiSE Github.io](http://aic-sri-international.github.io/aic-praise/) page:
+
+```
+wget http://aic-sri-international.github.io/aic-praise/praise.jar
+wget http://aic-sri-international.github.io/aic-praise/praise-gui.jar
+```
+
+Per the Github.io page instructions, I tried:
+
+```
+java -jar praise-gui.jar
+```
+
+This returned:
+
+
+```
+Error: Could not find or load main class com.sri.ai.praise.other.application.praise.app.PRAiSE
+```
+
+Adding `praise.jar` to the classpath did not resolve this issue. However, I could run the Earthquake example with:
+
+```
+git clone https://github.com/aic-sri-international/aic-praise.git
+cd aic-priase.git
+wget http://aic-sri-international.github.io/aic-praise/praise.jar
+java -jar praise.jar examples/earthquake.praise --query alarm
+```
+
+Which returns:
+
+```
+Query : alarm
+Result: 0
+Took  : 0h0m0.541s
+
+Query : earthquake
+Result: 0.004
+Took  : 0h0m0.90s
+
+Query : burglary
+Result: 0.011
+Took  : 0h0m0.71s
+
+...etc
+```
