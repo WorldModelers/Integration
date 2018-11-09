@@ -32,9 +32,9 @@ From Rodrigo:
 * https://github.com/aic-sri-international/aic-praise has much much more and the 'dev' branch was updated 14 days ago, although the last release was a year ago.  The 'Overview and Demo' link here is very clean - http://aic-sri-international.github.io/aic-praise/.  This repo 'implements the ideas presented in this paper: http://www.ai.sri.com/~braz/papers/PIMT.pdf and the repo depends on capabilities provided by the Expresso Library: http://aic-sri-international.github.io/aic-expresso/
 
 ## Documentation
+Documentation is generally scattered and somewhat fragmented. There is usage documentation and an explanation of the software for end-users [available in PDF form](http://www.ai.sri.com/~braz/software/PRAiSE/user%20guide.pdf). There is also information about PRAiSE on [Github Pages](http://aic-sri-international.github.io/aic-praise/).
 
-
-
+There is useful information about [compiling PRAiSE into demo JARs here](https://github.com/aic-sri-international/aic-praise/wiki/Deploy-Demos). To accomplish this, it is probably necessary to get fresh deployments of `aic-utils` and `aic-expresso`--see [docs on creating an `aic-utils` release](https://github.com/aic-sri-international/aic-util/wiki/Creating-A-Release).
 
 
 # Installation:
