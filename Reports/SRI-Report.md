@@ -176,20 +176,65 @@ wget http://aic-sri-international.github.io/aic-praise/praise.jar
 java -jar praise.jar examples/earthquake.praise --query alarm
 ```
 
-Which returns:
+Which returns (comments added for explanatory purposes; were not actually returned in results):
 
 ```
+##############################
+# Scenario 1: no alarm
+##############################
 Query : alarm
 Result: 0
-Took  : 0h0m0.541s
+Took  : 0h0m0.469s
 
 Query : earthquake
 Result: 0.004
-Took  : 0h0m0.90s
+Took  : 0h0m0.81s
 
 Query : burglary
 Result: 0.011
-Took  : 0h0m0.71s
+Took  : 0h0m0.75s
 
-...etc
+##############################
+### Scenario 2: alarm goes off
+##############################
+Query : alarm
+Result: 1
+Took  : 0h0m0.58s
+
+Query : burglary
+Result: 0.863
+Took  : 0h0m0.88s
+
+Query : earthquake
+Result: 0.061
+Took  : 0h0m0.42s
+
+##############################
+### Scenario 3: alarm goes off, but event was not burglary
+##############################
+Query : alarm
+Result: 1
+Took  : 0h0m0.85s
+
+Query : earthquake
+Result: 0.377
+Took  : 0h0m0.29s
+
+Query : burglary
+Result: 0
+Took  : 0h0m0.43s
+```
+
+This runs a classic Bayesian Belief Network (BBN) for the earthquake, burglary, alarm scenario. See these [CMU slides](http://www.cs.cmu.edu/afs/cs.cmu.edu/academic/class/15381-s06/www/bayesn2.pdf) for more info on this scenario. In this mock example, your home has an alarm system which can be triggered by minor earthquakes...or by a burglar! Sometimes the alarm doesn't go off at all in the event of a burglar (it fails) but it is occasionally set off by a minor earthquake. This example scenario lets you adjust the priors for either the burglary occurring or the earthquake occuring, then toggles whether an alarm went off. You are returned the various probabilities that:
+
+1. the alarm went off
+2. an earthquake occurred
+3. a burglarly occured
+
+Note in the first scenario, the alarm does not go off `p(alarm) = 0`. In the second scenario the alarm does go off so you can see that `p(alarm) = 1` and `p(burglary) = 0.863` which is quite high (due to our priors where a burglarly is more common than an earthquake).
+
+The `food security - july 2018 demo.praise` demo is broken. It can be run by defining the `foodSecurity` variable, e.g. with:
+
+```
+random foodSecurity    : [0; 100];
 ```
