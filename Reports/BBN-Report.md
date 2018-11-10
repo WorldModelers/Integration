@@ -67,6 +67,7 @@ Outputs are ultimately `causal_json.json`
 # Installation:
 
 Basically it starts with swapping out your own maven repo for theirs (not good for an actual install) so be cautious of this.  It's because some of the JARs aren't public and/or they haven't fully developed out the process to go get all the dependencies.  We need to understand what this process should look like moving forward.
+
 ```
 mv ~/.m2 .~/m2-back
 cp learnit_release_m2.tar.gz ~
@@ -187,3 +188,38 @@ Before-After    ENG_NW_20170106 32380   32390   32287   32296   For ﬁsheries ,
 
 Finally, you can see the results at `learnit_release_exp/causal_json.json`
 
+## Install Script
+Assumes you have an Ubuntu 16 machine with `learnit_release_v1.tar.gz` and `lemma.nv` in the `ubuntu` user's home directory (`/home/ubuntu`). 
+
+```
+sudo apt-get update
+sudo apt-get install default-jdk -y
+sudo apt-get install maven -y
+cp /usr/share/maven/conf/settings.xml ~/.m2/settings.xml
+
+cd /home/ubuntu
+mkdir bbn
+mv learnit_release_v1.tar.gz lemma.nv bbn
+cd bbn
+
+tar -zxf learnit_release_v1.tar.gz
+tar -zxf learnit_release_m2.tar.gz
+
+# generate backup of maven file
+mv ~/.m2 .~/m2-back
+cp learnit_release_m2.tar.gz ~
+tar -C ~ -zxf ~/learnit_release_m2.tar.gz
+rm ~/learnit_release_m2.tar.gz
+
+LMPATH=`pwd`
+sed -i "280s#/nfs/raid87/u14/WM/resources#$LMPATH#" learnit_release/neolearnit/src/main/java/com/bbn/akbc/neolearnit/util/GeneralUtils.java
+
+cd learnit_release
+mvn install -o
+
+# [ERROR] Plugin org.apache.maven.plugins:maven-install-plugin:2.5.2 or one of
+# its dependencies could not be resolved: Cannot access nexus 
+# (http://e-nexus-01.bbn.com:8081/nexus/content/groups/public) in offline 
+# mode and the artifact 
+# org.apache.maven.plugins:maven-install-plugin:jar:2.5.2 has not been # downloaded from it before. -> [Help 1]
+```
