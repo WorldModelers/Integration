@@ -192,28 +192,37 @@ Finally, you can see the results at `learnit_release_exp/causal_json.json`
 Assumes you have an Ubuntu 16 machine with `learnit_release_v1.tar.gz` and `lemma.nv` in the `ubuntu` user's home directory (`/home/ubuntu`). 
 
 ```
+# Install Java
 sudo apt-get update
 sudo apt-get install default-jdk -y
-sudo apt-get install maven -y
-cp /usr/share/maven/conf/settings.xml ~/.m2/settings.xml
 
+# Install Maven
+sudo apt-get update
+sudo apt-get install maven -y
+
+# Create original .m2 directory with default settings
+mkdir /home/ubuntu/.m2
+cp /usr/share/maven/conf/settings.xml /home/ubuntu/.m2/settings.xml
+
+# Setup and unzip LearnIt
 cd /home/ubuntu
 mkdir bbn
 mv learnit_release_v1.tar.gz lemma.nv bbn
 cd bbn
-
 tar -zxf learnit_release_v1.tar.gz
 tar -zxf learnit_release_m2.tar.gz
 
-# generate backup of maven file
-mv ~/.m2 .~/m2-back
+# Generate backup of maven file
+mv ~/.m2 ~/.m2-back
 cp learnit_release_m2.tar.gz ~
 tar -C ~ -zxf ~/learnit_release_m2.tar.gz
 rm ~/learnit_release_m2.tar.gz
 
+# Update path to lemma file
 LMPATH=`pwd`
 sed -i "280s#/nfs/raid87/u14/WM/resources#$LMPATH#" learnit_release/neolearnit/src/main/java/com/bbn/akbc/neolearnit/util/GeneralUtils.java
 
+# Build LearnIt
 cd learnit_release
 mvn install -o
 
