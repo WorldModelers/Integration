@@ -12,11 +12,13 @@
 * [General Findings](#general-findings)
 * [Documentation](#documentation)
 * [Installation](#installation)
+* [Ubuntu Server Installation](#ubuntu-server-installation)
 * [Running](#running)
 
 # Background
 
 From Rodrigo:
+
 * https://github.com/aic-sri-international/aic-praise-wm is the correct repository although it's out of date.  They maintain their own private repo which we can get access to.  The 'base work' is done here: https://github.com/aic-sri-international/aic-praise which relies on https://github.com/aic-sri-international/aic-expresso and https://github.com/aic-sri-international/aic-util.
 
 * UCSB’s CHIRTS system is not open source, but it can be accessed through a REST API described in the following document: https://docs.google.com/document/d/1J-WtKoGr4nVrxvQTo-qk9Ce66_CSum5h4YDJMWvPBtA/edit#  They access the CHIRPS REST API, although they do it through the MINT data catalog system kept by ISI.
@@ -39,11 +41,11 @@ There is useful information about [compiling PRAiSE into demo JARs here](https:/
 
 # Installation:
 
-https://github.com/aic-sri-international/aic-praise seems to be the thing to get started with.
+[https://github.com/aic-sri-international/aic-praise](https://github.com/aic-sri-international/aic-praise) seems to be the thing to get started with.
 
-Will follow the (command line instructions) here: https://github.com/aic-sri-international/aic-praise/wiki/Getting-Started.
+Will follow the (command line instructions) here: [https://github.com/aic-sri-international/aic-praise/wiki/Getting-Started](https://github.com/aic-sri-international/aic-praise/wiki/Getting-Started).
 
-https://github.com/aic-sri-international/aic-praise/blob/dev/examples/food%20security%20-%20july%202018%20demo.praise seems to be the example laid out at the PI meeting.
+[https://github.com/aic-sri-international/aic-praise/blob/dev/examples/food%20security%20-%20july%202018%20demo.praise](https://github.com/aic-sri-international/aic-praise/blob/dev/examples/food%20security%20-%20july%202018%20demo.praise) seems to be the example laid out at the PI meeting.
 
 ```
 git clone https://github.com/aic-sri-international/aic-praise.git
@@ -146,34 +148,68 @@ mvn clean test
 # Lots of Failure
 ```
 
-# Running:
-Unable to build any of the projects, I downloaded the pre-compiled JARs described on the [PRAiSE Github.io](http://aic-sri-international.github.io/aic-praise/) page:
+# Ubuntu Server Installation
+PRAiSE was successfully installed on an Ubuntu 16.04.3 LTS EC2 server using the following installation script:
 
 ```
-wget http://aic-sri-international.github.io/aic-praise/praise.jar
-wget http://aic-sri-international.github.io/aic-praise/praise-gui.jar
-```
+# Install Java
+sudo apt-get update
+sudo apt-get install default-jdk -y
 
-Per the Github.io page instructions, I tried:
+# Install Maven
+wget http://mirrors.gigenet.com/apache/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz
+tar xzvf apache-maven-3.6.0-bin.tar.gz
+sudo mv apache-maven-3.6.0 /usr/share/maven
+PATH=$PATH:/usr/share/maven/bin/
 
-```
-java -jar praise-gui.jar
-```
+# Install openjfx
+sudo apt-get install openjfx
 
-This returned:
-
-
-```
-Error: Could not find or load main class com.sri.ai.praise.other.application.praise.app.PRAiSE
-```
-
-Adding `praise.jar` to the classpath did not resolve this issue. However, I could run the Earthquake example with:
-
-```
+# Install PRAiSE 
+# Note that the JAVA_OPTIONS specified are to address a known bug 
+# with the latest JDK
 git clone https://github.com/aic-sri-international/aic-praise.git
 cd aic-priase.git
+_JAVA_OPTIONS=-Djdk.net.URLClassPath.disableClassPathURLCheck=true mvn clean install
+```
+
+### PRAiSE GUI
+
+If you would like to run the UI on a server you should install VNC:
+
+```
+sudo apt-get install xfce4 vnc4server
+vncserver
+```
+
+You will be asked to set a password for VNC access. Next, ensure that you have [VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/) installed locally. You can test your VNC connection by using an SSH tunnel to access your Ubuntu server (replace `server.ip.address` with your typical SSH connection string):
+
+```
+ssh -L 5901:localhost:5901 server.ip.address
+```
+
+Now, in VNC Viewer you can create a connection to `localhost:1` with the password you set on the server. This should open a display onto the server and give you a running terminal. 
+
+![VNC Viewer](images/vnc.png "VNC Viewer")
+
+From that terminal, run:
+
+```
+cd aic-praise
+java -jar target/PRAiSE-GUI-1.3.4-SNAPSHOT-jar-with-dependencies.jar
+```
+
+This will open up the PRAiSE GUI within VNC Viewer.
+
+![PRAiSE GUI](images/praise-gui.png "PRAiSE GUI")
+
+# Running:
+Once you have built PRAiSE you can run examples. To run the Earthquake example try:
+
+```
+cd aic-praise
 wget http://aic-sri-international.github.io/aic-praise/praise.jar
-java -jar praise.jar examples/earthquake.praise --query alarm
+java -jar target/PRAiSE-1.3.4-SNAPSHOT-jar-with-dependencies.jar examples/earthquake.praise --query alarm
 ```
 
 Which returns (comments added for explanatory purposes; were not actually returned in results):
