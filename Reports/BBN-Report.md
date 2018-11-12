@@ -13,6 +13,7 @@
 * [Documentation](#documentation)
 * [Installation](#installation)
 * [Running](#running)
+* [Install Script](#install-script)
 
 # Background
 https://github.com/BBN-E/Hume is the open source repo they're using for Hume however it's not ready to go.  They are providing us SFTP access to download a package for install.
@@ -133,6 +134,7 @@ sed -i '' "s#/home/hqiu/massive#`pwd`#g" learnit_release_exp/empty.params
 # Running:
 
 * This generates mappings.
+
 ```
 learnit_release/neolearnit/target/appassembler/bin/InstanceExtractor learnit_release_exp/empty.params all_event_event_pairs learnit_release_exp/source_lists/nn_events_serifxml.list learnit_release_exp/output.sjson
 ```
@@ -191,14 +193,19 @@ Finally, you can see the results at `learnit_release_exp/causal_json.json`
 ## Install Script
 Assumes you have an Ubuntu 16 machine with `learnit_release_v1.tar.gz` and `lemma.nv` in the `ubuntu` user's home directory (`/home/ubuntu`). 
 
+Call this script `install.sh` and invoke it as the `ubuntu` user with `bash install.sh` (note, you should not use `sudo` as that will impact the Maven settings used when compiling the project; appropriate `sudo` invocation is used as needed throughout the script).
+
+
 ```
 # Install Java
 sudo apt-get update
 sudo apt-get install default-jdk -y
 
 # Install Maven
-sudo apt-get update
-sudo apt-get install maven -y
+wget http://mirrors.gigenet.com/apache/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz
+tar xzvf apache-maven-3.6.0-bin.tar.gz
+sudo mv apache-maven-3.6.0 /usr/share/maven
+PATH=$PATH:/usr/share/maven/bin/
 
 # Create original .m2 directory with default settings
 mkdir /home/ubuntu/.m2
@@ -224,11 +231,15 @@ sed -i "280s#/nfs/raid87/u14/WM/resources#$LMPATH#" learnit_release/neolearnit/s
 
 # Build LearnIt
 cd learnit_release
-mvn install -o
+mvn install -o -DskipTests
 
-# [ERROR] Plugin org.apache.maven.plugins:maven-install-plugin:2.5.2 or one of
-# its dependencies could not be resolved: Cannot access nexus 
-# (http://e-nexus-01.bbn.com:8081/nexus/content/groups/public) in offline 
-# mode and the artifact 
-# org.apache.maven.plugins:maven-install-plugin:jar:2.5.2 has not been # downloaded from it before. -> [Help 1]
+# Update configurations
+mv learnit_release_exp/source_lists/nn_events_serifxml.list learnit_release_exp/source_lists/nn_events_serifxml.list.old
+# Create our own
+find `pwd`/serifxmls/* > learnit_release_exp/source_lists/nn_events_serifxml.list
+
+# Set configuration paths to appropriate user
+cp learnit_release_exp/empty.params learnit_release_exp/empty.params.old
+# Change paths to our own.
+sed -i "s#/home/hqiu/massive#`pwd`#g" learnit_release_exp/empty.params
 ```
