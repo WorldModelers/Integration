@@ -104,7 +104,7 @@ jupyter notebook
 
 At the end, you should see something like the following in Cytoscape:
 
-![graph](https://github.com/WorldModelers/Integration/raw/master/Reports/graph.png)
+![graph](images/graph.png)
 
 ## Issues
 Within the examples.ipynb, at the cell:
