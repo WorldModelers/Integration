@@ -1,7 +1,7 @@
 # World Modelers S3
 Accessing the World Modelers S3 requires an AWS access key and secret key.
 
-Using the Boto3 Python library, you can connect to the S3 bucket using the following:
+Using the Boto3 Python library, you can connect to S3 using the following:
 
 ```
 import boto3
@@ -10,6 +10,8 @@ session = boto3.Session(
     aws_access_key_id='YOUR_ACCESS_KEY',
     aws_secret_access_key='YOUR_SECRET_KEY',
 )
+
+s3 = session.resource('s3')
 ```
 
 You should then select the `world-modelers` bucket with:
