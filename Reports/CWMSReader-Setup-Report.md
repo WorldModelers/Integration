@@ -1,8 +1,6 @@
 # CWMS Reader
 
 * Analysis Date: 11/14/2018
-
-
 * System Version: Ubuntu 16.04.3 LTS
 * Java Version: OpenJDK version 1.8.0_181
 * SBCL (Lisp) version: SBCL 1.3.1.debian
@@ -25,6 +23,8 @@ There is an API availble which is also hosted by IHMC. Documentation for the [AP
 # General Findings
 
 The build seems to require Python2 and will break if the default system Python is Python3. See [Gensim installation within Makefile](https://github.com/wdebeaum/cwmsreader/blob/1cb9ba1acb5ba56df20b543dbc78b8f69376780d/src/VariableFinder/Makefile#L30)
+
+The interface is complicated and require passing Knowledge Query and Manipulation Language (KQML) queries to the reader from a client. It is possible to write scripts which do this, but there is no apparent API for scripting languages so one would still need to generate KQML and pass that to the reader.
 
 # Documentation
 
@@ -71,7 +71,7 @@ sudo apt-get install imagemagick -y
 
 # Clone repository and set $TRIPS_BASE variable
 git clone https://github.com/wdebeaum/cwmsreader.git
-TRIPS_BASE=$(pwd)/cwmsreader/
+TRIPS_BASE=$(pwd)/cwmsreader
 
 # Download WordNet data
 sudo mkdir /usr/local/share/wordnet/
@@ -109,6 +109,74 @@ make install
 ```
 
 # Running
+
+First, make sure $TRIPS_BASE is set:
+
+```
+echo $TRIPS_BASE
+```
+
+If this is empty, you can set this with 
+```
+cd ~/
+TRIPS_BASE=$(pwd)/cwmsreader`
+```
+
+Now, let's create a test file. Navigate to `$TRIPS_BASE` with `cd $TRIPS_BASE` then run:
+
+```
+echo "Drought in South Sudan is causing regional instability. Decreased water has negatively impacted crop yields. Lack of food is causing an uptick in violence in the area." >> sample.txt
+```
+
+With `$TRIPS_BASE` set you can use the following to run the reader without a UI:
+
+`
+$TRIPS_BASE/bin/trips-cwms -reader -nouser
+`
+
+Once this is running, open up another terminal window, set $TRIPS_BASE, and then run the TRIPS client with:
+
+`
+$TRIPS_BASE/bin/trips_client
+`
+
+This client will connect to the CWMS Reader instance you already have running (which is actually running at `localhost:6200`). From this client, you can send messages. Try registering your client with:
+
+```
+(register :name test-client)
+(tell :content (module-status ready)) 
+```
+
+Then, you can try submitting a file to be parsed. Note that you will have to replace `/home/ubuntu/cwmsreader/` with whatever value you have for `TRIPS_BASE`:
+
+```
+(request :receiver READER :content (run-file :folder "/home/ubuntu/cwmsreader/" :file "sample.txt" :reply-when-done t :exit-when-done f) :reply-with R01)
+```
+
+This should return the path to the parsed XML file:
+
+```
+(reply :content (result :uttnums (4 5 6) :ekb-file "/home/ubuntu/cwmsreader/bin/20181114T2148/sample_20181114T220006.ekb") :receiver TEST-CLIENT :in-reply-to R01 :sender READER)
+```
+
+In this case, `/home/ubuntu/cwmsreader/bin/20181114T2148/sample_20181114T220006.ekb` is an XML file containing the output from parsing `sample.txt` which was created previously. The output should look like:
+
+```
+<?xml version="1.0" encoding="UTF-8"?><ekb complete="true" domain="CWMS" id="sample" timestamp="20181114T220006">
+    <input type="">
+        <paragraphs>
+            <paragraph file="/home/ubuntu/cwmsreader//sample.txt" id="paragraph1">Drought in South Sudan is causing regional instability. Decreased water has negatively impacted crop yields. Lack of food is causing an uptick in violence in the area.
+</paragraph>
+        </paragraphs>
+        <sentences>
+            <sentence id="4" pid="paragraph1">Drought in South Sudan is causing regional instability.</sentence>
+            <sentence id="5" pid="paragraph1">Decreased water has negatively impacted crop yields.</sentence>
+            <sentence id="6" pid="paragraph1">Lack of food is causing an uptick in violence in the area.</sentence>
+
+...etc
+```
+
+
 
 # API
 
