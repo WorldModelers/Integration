@@ -286,26 +286,23 @@ It can be run using Docker. You first need to run a MySQL container and can then
 docker-compose -f src/main/docker/mysql.yml up -d
 ```
 
-However, it was not possible to run the PRAiSE-WM container itself due to a permission issue when pulling the container. 
+To pull the PRAiSE-WM container you need to authenticate with SRI's private Docker registry. To do this, log in to SRI's Artifactory. Click your username in the top right corner and create an API key.
+
+Then authenticate with the SRI registry with `docker login worldmodelers.cse.sri.com`. Provide your username (as it appears at top right in Artifactory) and the API key you generated as the password. Then run:
 
 ```
 docker-compose -f src/main/docker/praisewm.yml up -d
 ```
 
-returns:
+This launches the PRAiSE container exposed on port 4567, so you can access the web application via at `localhost:4567`.
 
-```
-ERROR: for praisewm-app  unauthorized: The client does not have permission for manifest
-ERROR: unauthorized: The client does not have permission for manifest
-```
-
-However, a normal installation was successful with:
+Additionally, a normal installation was successful with:
 
 ```
 ./gradlew yarnSetup yarn deploy
 java -jar build/libs/praisewm-2.3-all.jar
 ```
 
-Navigating to `localhost:4567` shows the web application. The web application seemed to function correctly except the explanation information at the right of the browser window did not match the model selected. 
+Navigating to `localhost:4567` shows the web application. With this build, the web application seemed to function correctly except the explanation information at the right of the browser window did not match the model selected. 
 
 ![PRAiSE WM Webapp](images/praise-wm-gui.png "PRAiSE WM Webapp")
