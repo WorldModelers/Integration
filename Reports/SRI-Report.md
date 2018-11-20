@@ -14,6 +14,7 @@
 * [Installation](#installation)
 * [Ubuntu Server Installation](#ubuntu-server-installation)
 * [Running](#running)
+* [PRAiSE-WM](#praise-wm)
 
 # Background
 
@@ -274,3 +275,37 @@ The `food security - july 2018 demo.praise` demo is broken. It can be run by def
 ```
 random foodSecurity    : [0; 100];
 ```
+
+# PRAiSE-WM
+
+PRAiSE-WM is the World Modeler specific version of PRAiSE. It is not publically available and is hosted on [Gitlab](https://gitlab.sri.com/world-modelers/praise-wm), with access controlled by SRI. 
+
+It can be run using Docker. You first need to run a MySQL container and can then run the PRAiSE-WM container. This relies on Docker-Compose's latest version, so make sure to follow the [Docker-Compose install instructions](https://docs.docker.com/compose/install/#install-compose) (e.g. do not install with `sudo apt-get install docker-compose`). Using Docker, it was possible to get MySQL running with (all commands below run from root `PRAiSE-WM` repo directory):
+
+```
+docker-compose -f src/main/docker/mysql.yml up -d
+```
+
+However, it was not possible to run the PRAiSE-WM container itself due to a permission issue when pulling the container. 
+
+```
+docker-compose -f src/main/docker/praisewm.yml up -d
+```
+
+returns:
+
+```
+ERROR: for praisewm-app  unauthorized: The client does not have permission for manifest
+ERROR: unauthorized: The client does not have permission for manifest
+```
+
+However, a normal installation was successful with:
+
+```
+./gradlew yarnSetup yarn deploy
+java -jar build/libs/praisewm-2.3-all.jar
+```
+
+Navigating to `localhost:4567` shows the web application. The web application seemed to function correctly except the explanation information at the right of the browser window did not match the model selected. 
+
+![PRAiSE WM Webapp](images/praise-wm-gui.png "PRAiSE WM Webapp")
