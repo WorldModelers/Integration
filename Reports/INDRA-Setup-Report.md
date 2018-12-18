@@ -16,6 +16,7 @@ Brandon tested with:
 * [Documentation](#documentation)
 * [Installation](#installation)
 * [Running INDRA](#running-indra)
+* [INDRA REST API](#indra-rest-api)
 
 # General Findings
 For a standard Python package, INDRA is easy to install but complex to configure. A key integration is missing: integration with Eidos via a web service. It appears that this integration will not be challenging to resolve.
@@ -125,3 +126,24 @@ interventions reduce conflict."""
 
 ep = eidos.process_text(text, webservice='http://localhost:5000')
 ```
+
+# INDRA REST API
+The INDRA REST API is available at [http://api.indra.bio:8000](http://api.indra.bio:8000). It has API documentation available here [http://www.indra.bio/rest_api/docs/](http://www.indra.bio/rest_api/docs/). The documentation is auto-generated from Swagger.
+
+The API has 3 primary endpoints for managing World Modelers related reading and converting reading output into INDRA statements:
+
+* `/eidos/process_jsonld`
+* `/hume/process_jsonld`
+* `/cwms/process_text`
+
+The Eidos endpoint was tested by providing it a sample of Eidos reading provided by UAZ. The output was as expected, a set of INDRA statements in JSON format.
+
+The Hume endpoint was tested by providing it a sample of Hume reading provided by Raytheon BBN. No statements were produced. HMS is currently investigating this issue.
+
+The CWMS endpoint was tested by providing it a sample of relevant text. INDRA communicated with the CWMS API automatically to perform reading. INDRA then parsed the reading output and returned the expected INDRA statements.
+
+### Additional endpoints
+Additional endpoints were tested but neither functioned as expected. These were:
+
+* `/preassembly/map_grounding`: returned no statements when passed a set of INDRA statements
+* `/preassembly/filter_belief`: returned no statements irrespective of the belief threshold provided
