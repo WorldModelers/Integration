@@ -1,0 +1,30 @@
+version: '2.4'
+
+services:
+    praisewm-app:
+        image: praisewmlocal
+        container_name: praisewm
+
+# The following is an example of setting PRAISEWM_DATA_DIRECTORY to a Windows specific
+# path.
+#
+# The 'setx' command will permanently set the variable in your Windows environment.
+# You must exit the console window from which you run the commands and run the
+# docker-compose command from a new console window so that the variables are
+# accessible from the environment:
+#    setx COMPOSE_CONVERT_WINDOWS_PATHS 1
+#    setx PRAISEWM_DATA_DIRECTORY c:/data/praisewm
+# You can use any complete Windows path that you'd like for PRAISEWM_DATA_DIRECTORY
+# as long as you have appropriate Windows access permissions, however, you may 
+# encounter problems if the path contains spaces. The praisewm server will
+# create its directories within PRAISEWM_DATA_DIRECTORY.
+#
+# For more information see https://docs.docker.com/compose/reference/envvars/
+
+        volumes:
+           - ${PRAISEWM_DATA_DIRECTORY:-~/praisewm/data}:/opt/praisewm/data
+        environment:
+            - PRAISEWM_DATABASE_HOST=praisewm-mysql
+        ports:
+            - 4567:4567
+            - 4568:4568
