@@ -79,7 +79,7 @@ sed -i 's/useW2V = false/useW2V = true/' src/main/resources/eidos.conf
 sbt assembly
 
 # Test installation with:
-JAVA_OPTS="-Xmx8g" scala -cp target/scala-2.12/eidos-assembly-0.2.2-SNAPSHOT.jar org.clulab.wm.eidos.apps.examples.ExtractFromText
+JAVA_OPTS="-Xmx8g" scala -cp target/scala-2.12/eidos-assembly-0.2.3-SNAPSHOT.jar org.clulab.wm.eidos.apps.examples.ExtractFromText
 
 # Create Conda Env for INDRA and run install
 conda create -n indra_env python=3.7 pip
@@ -91,7 +91,7 @@ pip install pygraphviz pyjnius flask jupyter
 
 # Set Eidos class path for INDRA
 echo "import indra" | python
-sed -i 's/EIDOSPATH = /EIDOSPATH = \/home\/ubuntu\/eidos\/target\/scala-2.12\/eidos-assembly-0.2.2-SNAPSHOT.jar/' /home/ubuntu/.config/indra/config.ini
+sed -i 's/EIDOSPATH = /EIDOSPATH = \/home\/ubuntu\/eidos\/target\/scala-2.12\/eidos-assembly-0.2.3-SNAPSHOT.jar/' /home/ubuntu/.config/indra/config.ini
 
 # Install BioNetGen
 wget https://s3.amazonaws.com/world-modelers/applications/BioNetGen-2.3.1-Linux.tar.gz
