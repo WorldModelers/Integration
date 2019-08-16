@@ -75,6 +75,10 @@ mv vectors.txt src/main/resources/org/clulab/wm/eidos/english/w2v
 # update Eidos conf to use W2V
 sed -i 's/useW2V = false/useW2V = true/' src/main/resources/eidos.conf
 
+# Set wordToVecPath correctly
+sed -i 's/\/\/  wordToVecPath = \/org\/clulab\/wm\/eidos\/${EidosSystem.language}\/w2v\/vectors.txt/wordToVecPath = \/org\/clulab\/wm\/eidos\/${EidosSystem.language}\/w2v\/vectors.txt/' src/main/resources/eidos.conf
+sed -i 's/wordToVecPath = \/org\/clulab\/wm\/eidos\/${EidosSystem.language}\/w2v\/glove.840B.300d.txt/\/\//' src/main/resources/eidos.conf
+
 # Assemble Eidos
 sbt assembly
 
