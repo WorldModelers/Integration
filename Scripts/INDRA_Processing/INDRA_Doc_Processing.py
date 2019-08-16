@@ -1,20 +1,19 @@
 import os
 import re
-
 import json
 import numpy as np
-
 import pandas
-
 from pysb.simulator import ScipyOdeSimulator
-
 from indra.sources import eidos
 from IPython.display import Image
-
 from indra.assemblers.graph import GraphAssembler
 from indra.assemblers.cag import CAGAssembler
 import random
 import datetime
+
+EIDOS_WS_URL = 'http://localhost:9000/'
+SOURCE_DIRECTORY = '/home/cwilliams/M20_Shaved/extracted/'
+DESTINATION_DIRECTORY = '/home/cwilliams/M20_Shaved/extracted_processed'
 
 success_count = 0
 failure_count = 0
@@ -31,12 +30,12 @@ def fix_periods(contents):
 
 def run_indra(doc):
     text = fix_periods(doc['extracted_text'])
-    ep = eidos.process_text(text, webservice='http://localhost:9000/')
+    ep = eidos.process_text(text, webservice=EIDOS_WS_URL)
     statements = [i.to_json() for i in ep.statements]
     return statements
 
-for file in os.listdir('/home/cwilliams/M20_Shaved/extracted/'):
-    files.append(f"/home/cwilliams/M20_Shaved/extracted/{file}")
+for file in os.listdir(SOURCE_DIRECTORY):
+    files.append(f"{SOURCE_DIRECTORY}{file}")
 
 # for file in random.sample(files, 125):
 for file in files:
@@ -45,15 +44,15 @@ for file in files:
     print(f'reading file {file}')
     with open(file,'r') as f:
         doc = json.loads(f.read())
-    
+
     INDRA_statements = run_indra(doc)
     if len(INDRA_statements) > 0:
       non_zero_count += 1
     doc['INDRA_statements'] = INDRA_statements
-    
+
     file_name = file.split('extracted')[1]
-    
-    with open(f'/home/cwilliams/M20_Shaved/extracted_processed{file_name}','w+') as f:
+
+    with open(f'{DESTINATION_DIRECTORY}{file_name}','w+') as f:
         f.write(json.dumps(doc))
     success_count += 1
   except Exception as e:
