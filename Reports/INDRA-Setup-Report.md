@@ -38,7 +38,7 @@ sudo apt-get update
 sudo apt-get install git
 
 # install JRE
-sudo apt-get install default-jre default-jdk
+sudo apt-get install openjdk-8-jre openjdk-8-jdk
 
 # install Anaconda
 wget https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh
@@ -60,7 +60,7 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89
 sudo apt-get update
 sudo apt-get install sbt
 
-# set JAVA_HOME in .bashrc 
+# set JAVA_HOME in .bashrc
 echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 export PATH=$JAVA_HOME/bin:$PATH" >> /home/ubuntu/.bashrc
 source ~/.bashrc
 
@@ -102,6 +102,17 @@ sudo mv BioNetGen-2.3.1 /usr/local/share/BioNetGen
 # Running INDRA
 INDRA and Eidos integration was successful using the [INDRA Test Notebook](https://github.com/WorldModelers/Integration/blob/master/Notebooks/INDRA_tests.ipynb) available in this repository. This relies on having a built Eidos JAR and ensuring that it is available for INDRA usage.
 
+## Using INDRA Doc Processing script
+[INDRA_Doc_Processing.py](https://github.com/WorldModelers/Integration/blob/master/Scripts/INDRA_Processing/INDRA_Doc_Processing.py) available in this repository.
+### Script Config
+```
+EIDOS_WS_URL = [URL TO EIDOS WEB SERVICE (Default: http://localhost:5000)]
+SOURCE_DIRECTORY = [SOURCE DIRECTORY WHERE DOCUMENTS ARE READ FROM (must include trailing forward-slash)]
+DESTINATION_DIRECTORY = [DESTINATION DIRECTORY WHERE PROCESSED DOCUMENTS ARE STORED (exclude trailing forward-slash)]
+```
+
+`INDRA_Doc_Processing.py` will iterate over each file in the source directory and use Eidos to process and store the processed file in the configured destination directory.
+
 ## Eidos Web Service
 INDRA does have the ability to run a [lightweight Flask web service](https://github.com/sorgerlab/indra/blob/master/indra/sources/eidos/server.py) for issues commands to Eidos. There is a discussion about whether this should be included in Eidos, not INDRA, here in a related [pull request to Eidos](https://github.com/clulab/eidos/pull/484).
 
@@ -118,10 +129,10 @@ from indra.sources import eidos
 
 
 
-text = """A significant increase in precipitation resulted in food 
-insecurity and a decrease in humanitarian interventions. 
-Actually, food insecurity itself can lead to conflict, and in turn, 
-conflict can drive food insecurity. Generally, humanitarian 
+text = """A significant increase in precipitation resulted in food
+insecurity and a decrease in humanitarian interventions.
+Actually, food insecurity itself can lead to conflict, and in turn,
+conflict can drive food insecurity. Generally, humanitarian
 interventions reduce conflict."""
 
 ep = eidos.process_text(text, webservice='http://localhost:5000')
