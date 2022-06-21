@@ -58,7 +58,7 @@ netaddr==0.7.19
 netifaces==0.10.9
 networkx==2.2
 notebook==5.7.8
-numpy==1.16.2
+numpy==1.22.0
 oslo.concurrency==3.29.1
 oslo.config==6.8.1
 oslo.i18n==3.23.1
