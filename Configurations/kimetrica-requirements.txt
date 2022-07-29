@@ -49,7 +49,7 @@ linearmodels==4.12
 lockfile==0.12.2
 luigi==2.8.3
 MarkupSafe==1.1.1
-mistune==0.8.4
+mistune==2.0.3
 monotonic==1.5
 munch==2.3.2
 nbconvert==5.4.1
