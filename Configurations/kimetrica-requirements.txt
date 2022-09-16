@@ -62,7 +62,7 @@ numpy==1.16.2
 oslo.concurrency==3.29.1
 oslo.config==6.8.1
 oslo.i18n==3.23.1
-oslo.utils==3.40.3
+oslo.utils==4.10.1
 pandas==0.24.2
 pandocfilters==1.4.2
 parso==0.3.4
